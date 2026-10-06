@@ -1,0 +1,13 @@
+{
+  "name": "spor-canli",
+  "version": "1.0.0",
+  "description": "Canlı spor yayın sitesi (React + Node)",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js",
+    "build": "cd client && npm run build",
+    "start:dev": "node server/index.js"
+  }
+}
