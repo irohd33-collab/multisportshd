@@ -1,0 +1,46 @@
+# AppVeyor konfigürasyonu — Windows .exe otomatik derleme
+# Bu dosyayı repo köküne koy; AppVeyor projeyi bağladığında her commit'te
+# otomatik olarak MultiSportsHD-Setup.exe üretir ve "Artifacts" bölümüne koyar.
+
+version: 1.0.{build}
+
+image: Visual Studio 2022
+
+platform: x64
+
+cache:
+  - node_modules
+
+install:
+  - ps: Install-Product node 20 LTS
+  - npm install --no-audit --no-fund
+
+build_script:
+  - cd desktop
+  - npm install --no-audit --no-fund
+  - npx electron-builder --win --publish never
+
+artifacts:
+  - path: desktop\downloads\desktop\MultiSportsHD-Setup-*.exe
+    name: WindowsSetup
+
+  - path: downloads\desktop\MultiSportsHD-Setup-*.exe
+    name: WindowsSetupAlt
+
+deploy:
+  - provider: GitHub
+    release: v$(app_version)
+    auth_token:
+      secure: GITHUB_TOKEN_BURAYA   # AppVeyor proje ayarlarında encrypt et
+    artifact: WindowsSetup
+    draft: false
+    prerelease: false
+    on:
+      branch: main
+
+notifications:
+  - provider: Email
+    to:
+      - support@multisportshd.com
+    on_build_success: true
+    on_build_failure: true
